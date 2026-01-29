@@ -36,6 +36,45 @@ class Calculator {
     }
   }
 
+  // SCIENTIFIC OPERATIONS
+  scientificOperation(op) {
+    if (this.error) { 
+      this.error = null; 
+      this.expression = ''; 
+    }
+    
+    if (this.expression === '') return;
+    
+    try {
+      let value = parseFloat(this.expression);
+      
+      switch(op) {
+        case 'sqrt':
+          if (value < 0) {
+            this.error = 'Error: √ of negative';
+            break;
+          }
+          this.expression = Math.sqrt(value).toString();
+          break;
+        case 'square':
+          this.expression = (value * value).toString();
+          break;
+        case 'reciprocal':
+          if (value === 0) {
+            this.error = 'Error: 1/0 undefined';
+            break;
+          }
+          this.expression = (1 / value).toString();
+          break;
+        case 'pi':
+          this.expression = Math.PI.toString();
+          break;
+      }
+    } catch (e) {
+      this.error = 'Error';
+    }
+  }
+
   compute() {
     try {
       let expr = this.expression;
@@ -106,6 +145,16 @@ deleteButton.addEventListener('click', () => {
   calculator.updateDisplay();
 });
 
+// Scientific buttons event listeners
+const scientificButtons = document.querySelectorAll('[data-operation="sqrt"], [data-operation="square"], [data-operation="reciprocal"], [data-operation="pi"]');
+
+scientificButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    calculator.scientificOperation(button.dataset.operation);
+    calculator.updateDisplay();
+  });
+});
+
 // Keyboard support
 window.addEventListener('keydown', (e) => {
   const key = e.key;
@@ -145,5 +194,31 @@ window.addEventListener('keydown', (e) => {
   if (key.toLowerCase() === 'c' || key === 'Escape') {
     calculator.clear();
     calculator.updateDisplay();
+    return;
+  }
+
+  // Scientific keyboard shortcuts
+  if (key.toLowerCase() === 'q') { // √ (Square Root)
+    calculator.scientificOperation('sqrt');
+    calculator.updateDisplay();
+    return;
+  }
+  
+  if (key.toLowerCase() === 's') { // Square (x²)
+    calculator.scientificOperation('square');
+    calculator.updateDisplay();
+    return;
+  }
+  
+  if (key.toLowerCase() === 'r') { // Reciprocal (1/x)
+    calculator.scientificOperation('reciprocal');
+    calculator.updateDisplay();
+    return;
+  }
+  
+  if (key.toLowerCase() === 'p') { // Pi (π)
+    calculator.scientificOperation('pi');
+    calculator.updateDisplay();
+    return;
   }
 });

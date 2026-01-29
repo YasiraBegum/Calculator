@@ -35,7 +35,7 @@ body {
 .calculator-grid {
   display: grid;
   grid-template-columns: repeat(4, 80px);
-  grid-template-rows: minmax(100px, auto) repeat(5, 80px);
+  grid-template-rows: minmax(100px, auto) repeat(6, 80px); /* Changed from 5 to 6 for extra row */
   gap: 1px;
   background-color: #000;
   border-radius: 20px;
@@ -51,12 +51,19 @@ body {
   background-color: #1c1c1c;
   color: white;
   border-radius: 10px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
 }
 
 /* Hover effect for all buttons */
 .calculator-grid > button:hover {
   background-color: #333;
+  transform: scale(1.02);
+}
+
+/* Active/pressed effect */
+.calculator-grid > button:active {
+  transform: scale(0.98);
 }
 
 .span-two {
@@ -80,6 +87,31 @@ button[data-equals]:hover {
   background-color: #2980b9;
 }
 
+/* 🟪 SCIENTIFIC BUTTONS - Purple Theme */
+button[data-operation="sqrt"],
+button[data-operation="square"],
+button[data-operation="reciprocal"],
+button[data-operation="pi"],
+.scientific-btn {
+  background-color: #9b59b6 !important;
+  color: white !important;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+button[data-operation="sqrt"]:hover,
+button[data-operation="square"]:hover,
+button[data-operation="reciprocal"]:hover,
+button[data-operation="pi"]:hover,
+.scientific-btn:hover {
+  background-color: #8e44ad !important;
+}
+
+/* Special styling for Pi button */
+button[data-operation="pi"] {
+  font-style: italic;
+}
+
 /* 🟦 Output display with blue numbers */
 .output {
   grid-column: 1 / -1;
@@ -92,15 +124,64 @@ button[data-equals]:hover {
   border-radius: 10px;
   word-wrap: break-word;
   word-break: break-all;
+  margin-bottom: 10px;
+  border: 2px solid #3498db;
+  box-shadow: inset 0 0 10px rgba(52, 152, 219, 0.3);
 }
 
 .output .previous-operand {
   color: rgba(255, 255, 255, 0.6);
   font-size: 1.2rem;
+  min-height: 1.5rem;
 }
 
 .output .current-operand {
   color: #3498db;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: bold;
+  min-height: 2.5rem;
+}
+
+/* Tooltip for scientific functions */
+.scientific-btn {
+  position: relative;
+}
+
+.scientific-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  z-index: 100;
+}
+
+.scientific-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 400px) {
+  .calculator-grid {
+    grid-template-columns: repeat(4, 70px);
+    grid-template-rows: minmax(90px, auto) repeat(6, 70px);
+  }
+  
+  .calculator-grid > button {
+    font-size: 1.3rem;
+  }
+  
+  .output .current-operand {
+    font-size: 1.8rem;
+  }
 }

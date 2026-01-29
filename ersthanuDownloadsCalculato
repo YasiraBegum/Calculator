@@ -1,0 +1,218 @@
+[1mdiff --git a/index.html b/index.html[m
+[1mindex 26c0558..a18ceff 100644[m
+[1m--- a/index.html[m
+[1m+++ b/index.html[m
+[36m@@ -35,6 +35,16 @@[m
+     <button data-number>0</button>[m
+     <button data-number>.</button>[m
+     <button data-equals class="span-two">=</button>[m
+[32m+[m
+[32m+[m[32m    <!-- =================== -->[m
+[32m+[m[32m    <!-- SCIENTIFIC BUTTONS -->[m
+[32m+[m[32m    <!-- =================== -->[m
+[32m+[m[32m    <button class="scientific-btn" data-operation="sqrt">√</button>[m
+[32m+[m[32m    <button class="scientific-btn" data-operation="square">x²</button>[m
+[32m+[m[32m    <button class="scientific-btn" data-operation="reciprocal">1/x</button>[m
+[32m+[m[32m    <button class="scientific-btn" data-operation="pi">π</button>[m
+[32m+[m[32m    <!-- =================== -->[m
+[32m+[m
+   </div>[m
+ [m
+   <script src="script.js"></script>[m
+[1mdiff --git a/script.js b/script.js[m
+[1mindex 8d83417..1e78fd8 100644[m
+[1m--- a/script.js[m
+[1m+++ b/script.js[m
+[36m@@ -36,6 +36,45 @@[m [mclass Calculator {[m
+     }[m
+   }[m
+ [m
+[32m+[m[32m  // SCIENTIFIC OPERATIONS[m
+[32m+[m[32m  scientificOperation(op) {[m
+[32m+[m[32m    if (this.error) {[m[41m [m
+[32m+[m[32m      this.error = null;[m[41m [m
+[32m+[m[32m      this.expression = '';[m[41m [m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    if (this.expression === '') return;[m
+[32m+[m[41m    [m
+[32m+[m[32m    try {[m
+[32m+[m[32m      let value = parseFloat(this.expression);[m
+[32m+[m[41m      [m
+[32m+[m[32m      switch(op) {[m
+[32m+[m[32m        case 'sqrt':[m
+[32m+[m[32m          if (value < 0) {[m
+[32m+[m[32m            this.error = 'Error: √ of negative';[m
+[32m+[m[32m            break;[m
+[32m+[m[32m          }[m
+[32m+[m[32m          this.expression = Math.sqrt(value).toString();[m
+[32m+[m[32m          break;[m
+[32m+[m[32m        case 'square':[m
+[32m+[m[32m          this.expression = (value * value).toString();[m
+[32m+[m[32m          break;[m
+[32m+[m[32m        case 'reciprocal':[m
+[32m+[m[32m          if (value === 0) {[m
+[32m+[m[32m            this.error = 'Error: 1/0 undefined';[m
+[32m+[m[32m            break;[m
+[32m+[m[32m          }[m
+[32m+[m[32m          this.expression = (1 / value).toString();[m
+[32m+[m[32m          break;[m
+[32m+[m[32m        case 'pi':[m
+[32m+[m[32m          this.expression = Math.PI.toString();[m
+[32m+[m[32m          break;[m
+[32m+[m[32m      }[m
+[32m+[m[32m    } catch (e) {[m
+[32m+[m[32m      this.error = 'Error';[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+   compute() {[m
+     try {[m
+       let expr = this.expression;[m
+[36m@@ -106,6 +145,16 @@[m [mdeleteButton.addEventListener('click', () => {[m
+   calculator.updateDisplay();[m
+ });[m
+ [m
+[32m+[m[32m// Scientific buttons event listeners[m
+[32m+[m[32mconst scientificButtons = document.querySelectorAll('[data-operation="sqrt"], [data-operation="square"], [data-operation="reciprocal"], [data-operation="pi"]');[m
+[32m+[m
+[32m+[m[32mscientificButtons.forEach(button => {[m
+[32m+[m[32m  button.addEventListener('click', () => {[m
+[32m+[m[32m    calculator.scientificOperation(button.dataset.operation);[m
+[32m+[m[32m    calculator.updateDisplay();[m
+[32m+[m[32m  });[m
+[32m+[m[32m});[m
+[32m+[m
+ // Keyboard support[m
+ window.addEventListener('keydown', (e) => {[m
+   const key = e.key;[m
+[36m@@ -145,5 +194,31 @@[m [mwindow.addEventListener('keydown', (e) => {[m
+   if (key.toLowerCase() === 'c' || key === 'Escape') {[m
+     calculator.clear();[m
+     calculator.updateDisplay();[m
+[32m+[m[32m    return;[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // Scientific keyboard shortcuts[m
+[32m+[m[32m  if (key.toLowerCase() === 'q') { // √ (Square Root)[m
+[32m+[m[32m    calculator.scientificOperation('sqrt');[m
+[32m+[m[32m    calculator.updateDisplay();[m
+[32m+[m[32m    return;[m
+[32m+[m[32m  }[m
+[32m+[m[41m  [m
+[32m+[m[32m  if (key.toLowerCase() === 's') { // Square (x²)[m
+[32m+[m[32m    calculator.scientificOperation('square');[m
+[32m+[m[32m    calculator.updateDisplay();[m
+[32m+[m[32m    return;[m
+[32m+[m[32m  }[m
+[32m+[m[41m  [m
+[32m+[m[32m  if (key.toLowerCase() === 'r') { // Reciprocal (1/x)[m
+[32m+[m[32m    calculator.scientificOperation('reciprocal');[m
+[32m+[m[32m    calculator.updateDisplay();[m
+[32m+[m[32m    return;[m
+[32m+[m[32m  }[m
+[32m+[m[41m  [m
+[32m+[m[32m  if (key.toLowerCase() === 'p') { // Pi (π)[m
+[32m+[m[32m    calculator.scientificOperation('pi');[m
+[32m+[m[32m    calculator.updateDisplay();[m
+[32m+[m[32m    return;[m
+   }[m
+ });[m
+\ No newline at end of file[m
+[1mdiff --git a/style.css b/style.css[m
+[1mindex 7ce50df..c8fc773 100644[m
+[1m--- a/style.css[m
+[1m+++ b/style.css[m
+[36m@@ -35,7 +35,7 @@[m [mbody {[m
+ .calculator-grid {[m
+   display: grid;[m
+   grid-template-columns: repeat(4, 80px);[m
+[31m-  grid-template-rows: minmax(100px, auto) repeat(5, 80px);[m
+[32m+[m[32m  grid-template-rows: minmax(100px, auto) repeat(6, 80px); /* Changed from 5 to 6 for extra row */[m
+   gap: 1px;[m
+   background-color: #000;[m
+   border-radius: 20px;[m
+[36m@@ -51,12 +51,19 @@[m [mbody {[m
+   background-color: #1c1c1c;[m
+   color: white;[m
+   border-radius: 10px;[m
+[31m-  transition: background-color 0.2s ease;[m
+[32m+[m[32m  transition: background-color 0.2s ease, transform 0.1s ease;[m
+[32m+[m[32m  cursor: pointer;[m
+ }[m
+ [m
+ /* Hover effect for all buttons */[m
+ .calculator-grid > button:hover {[m
+   background-color: #333;[m
+[32m+[m[32m  transform: scale(1.02);[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m/* Active/pressed effect */[m
+[32m+[m[32m.calculator-grid > button:active {[m
+[32m+[m[32m  transform: scale(0.98);[m
+ }[m
+ [m
+ .span-two {[m
+[36m@@ -80,6 +87,31 @@[m [mbutton[data-equals]:hover {[m
+   background-color: #2980b9;[m
+ }[m
+ [m
+[32m+[m[32m/* 🟪 SCIENTIFIC BUTTONS - Purple Theme */[m
+[32m+[m[32mbutton[data-operation="sqrt"],[m
+[32m+[m[32mbutton[data-operation="square"],[m
+[32m+[m[32mbutton[data-operation="reciprocal"],[m
+[32m+[m[32mbutton[data-operation="pi"],[m
+[32m+[m[32m.scientific-btn {[m
+[32m+[m[32m  background-color: #9b59b6 !important;[m
+[32m+[m[32m  color: white !important;[m
+[32m+[m[32m  font-weight: bold;[m
+[32m+[m[32m  font-size: 1.3rem;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mbutton[data-operation="sqrt"]:hover,[m
+[32m+[m[32mbutton[data-operation="square"]:hover,[m
+[32m+[m[32mbutton[data-operation="reciprocal"]:hover,[m
+[32m+[m[32mbutton[data-operation="pi"]:hover,[m
+[32m+[m[32m.scientific-btn:hover {[m
+[32m+[m[32m  background-color: #8e44ad !important;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m/* Special styling for Pi button */[m
+[32m+[m[32mbutton[data-operation="pi"] {[m
+[32m+[m[32m  font-style: italic;[m
+[32m+[m[32m}[m
+[32m+[m
+ /* 🟦 Output display with blue numbers */[m
+ .output {[m
+   grid-column: 1 / -1;[m
+[36m@@ -92,15 +124,64 @@[m [mbutton[data-equals]:hover {[m
+   border-radius: 10px;[m
+   word-wrap: break-word;[m
+   word-break: break-all;[m
+[32m+[m[32m  margin-bottom: 10px;[m
+[32m+[m[32m  border: 2px solid #3498db;[m
+[32m+[m[32m  box-shadow: inset 0 0 10px rgba(52, 152, 219, 0.3);[m
+ }[m
+ [m
+ .output .previous-operand {[m
+   color: rgba(255, 255, 255, 0.6);[m
+   font-size: 1.2rem;[m
+[32m+[m[32m  min-height: 1.5rem;[m
+ }[m
+ [m
+ .output .current-operand {[m
+   color: #3498db;[m
+[31m-  font-size: 2rem;[m
+[32m+[m[32m  font-size: 2.2rem;[m
+   font-weight: bold;[m
+[32m+[m[32m  min-height: 2.5rem;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m/* Tooltip for scientific functions */[m
+[32m+[m[32m.scientific-btn {[m
+[32m+[m[32m  position: relative;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m.scientific-btn::after {[m
+[32m+[m[32m  content: attr(data-tooltip);[m
+[32m+[m[32m  po
